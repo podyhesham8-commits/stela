@@ -1,0 +1,1630 @@
+<!doctype html>
+<html lang="ar" dir="rtl" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ذكريات استيلا - Stella Memories</title>
+    <meta name="description" content="منصة ذكريات شلة استيلا - شير صور وفيديوهات ورغي وشات حي بين الأصحاب" />
+    <meta property="og:title" content="ذكريات استيلا - Stella Memories" />
+    <meta property="og:description" content="منصة ذكريات شلة استيلا - شير صور وفيديوهات ورغي وشات حي بين الأصحاب" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Google Fonts: Readex Pro & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=Readex+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Readex Pro', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
+
+    <!-- Supabase JS v2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
+
+    <style>
+      body {
+        font-family: 'Readex Pro', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      }
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #090d16;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #1e293b;
+        border-radius: 9999px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #334155;
+      }
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    </style>
+  </head>
+  <body class="bg-slate-950 text-slate-100 min-h-screen selection:bg-pink-500 selection:text-white antialiased flex flex-col font-sans">
+
+    <!-- Top Navigation Bar -->
+    <header class="sticky top-0 z-40 w-full border-b border-slate-800/80 bg-slate-950/90 backdrop-blur-xl">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+        <!-- Zone 1: Brand title, single line text -->
+        <div onclick="switchTab('feed')" class="flex items-center gap-2.5 cursor-pointer select-none group shrink-0">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-pink-500 via-rose-500 to-purple-600 flex items-center justify-center shadow-lg shadow-pink-500/20 group-hover:scale-105 transition-transform">
+            <i data-lucide="sparkles" class="w-5 h-5 text-white"></i>
+          </div>
+          <span class="text-xl font-bold tracking-tight bg-gradient-to-r from-pink-400 via-rose-300 to-purple-300 bg-clip-text text-transparent">
+            ذكريات استيلا
+          </span>
+        </div>
+
+        <!-- Zone 2: Navigation Links -->
+        <nav class="flex items-center gap-1 sm:gap-2">
+          <button id="nav-btn-feed" onclick="switchTab('feed')" class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors whitespace-nowrap text-pink-400 bg-pink-500/10 border border-pink-500/20">
+            <i data-lucide="image" class="w-4 h-4"></i>
+            <span>الفيد والذكريات</span>
+          </button>
+
+          <button id="nav-btn-chat" onclick="switchTab('chat')" class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors whitespace-nowrap text-slate-400 hover:text-slate-200 hover:bg-slate-900">
+            <i data-lucide="message-circle" class="w-4 h-4"></i>
+            <span>رغي الشلة</span>
+          </button>
+
+          <button id="nav-btn-accounts" onclick="switchTab('accounts')" class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors whitespace-nowrap text-slate-400 hover:text-slate-200 hover:bg-slate-900">
+            <i data-lucide="users" class="w-4 h-4"></i>
+            <span>الأعضاء</span>
+          </button>
+
+          <button id="nav-btn-profile" onclick="switchTab('profile')" class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors whitespace-nowrap text-slate-400 hover:text-slate-200 hover:bg-slate-900">
+            <i data-lucide="user" class="w-4 h-4"></i>
+            <span>بروفايلي</span>
+          </button>
+        </nav>
+
+        <!-- Zone 3: Primary Actions -->
+        <div class="flex items-center gap-2.5 shrink-0">
+          <button onclick="openCreateModal()" class="flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold text-white bg-gradient-to-r from-pink-500 to-purple-600 rounded-xl hover:from-pink-400 hover:to-purple-500 shadow-md shadow-pink-900/30 transition-all active:scale-95 whitespace-nowrap">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            <span>نشر ذكرى</span>
+          </button>
+
+          <!-- User Container (Logged In vs Logged Out) -->
+          <div id="auth-actions-container" class="flex items-center">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+      <!-- ================= VIEW 1: FEED ================= -->
+      <section id="view-feed" class="space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <!-- Main Feed Column -->
+          <div class="lg:col-span-8 space-y-6">
+            <!-- Welcome Banner -->
+            <div class="rounded-2xl border border-slate-800 bg-gradient-to-r from-slate-900 via-slate-900/90 to-purple-950/30 p-5 shadow-xl">
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-pink-500/10 border border-pink-500/30 flex items-center justify-center text-pink-400">
+                    <i data-lucide="sparkles" class="w-5 h-5"></i>
+                  </div>
+                  <div>
+                    <h2 id="welcome-user-title" class="text-base font-bold text-white">
+                      يا أهلاً بيك في ذكريات استيلا! 🌟
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-0.5">
+                      متصل بسوبابيز مباشرة (Supabase Live) · كل الصور والفيديوهات والذكريات حقيقية
+                    </p>
+                  </div>
+                </div>
+
+                <div class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium">
+                  <i data-lucide="database" class="w-3.5 h-3.5"></i>
+                  <span>سوبابيز لايف</span>
+                </div>
+              </div>
+
+              <!-- Quick Post Bar -->
+              <div onclick="openCreateModal()" class="flex items-center gap-3 p-3 bg-slate-950/80 hover:bg-slate-950 border border-slate-800/80 hover:border-pink-500/40 rounded-xl cursor-pointer transition-all">
+                <img id="quick-bar-avatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=Guest" alt="صورة" class="w-8 h-8 rounded-full border border-slate-700 object-cover bg-slate-800" />
+                <span class="text-xs text-slate-400 flex-1">
+                  انشر صورة أو فيديو جديد للشلة...
+                </span>
+                <span class="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-pink-500/10 text-pink-400 text-xs font-semibold hover:bg-pink-500/20 transition-colors">
+                  <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                  <span>مشاركة</span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Segmented Filter & Search Controls -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="flex items-center gap-1 p-1 bg-slate-900 border border-slate-800 rounded-xl overflow-x-auto no-scrollbar">
+                <button onclick="setFeedFilter('all')" id="filter-btn-all" class="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap bg-slate-800 text-pink-400 shadow-sm">
+                  كل الذكريات (<span id="feed-count-badge">0</span>)
+                </button>
+                <button onclick="setFeedFilter('friends')" id="filter-btn-friends" class="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap text-slate-400 hover:text-white">
+                  للأنتيم بس
+                </button>
+                <button onclick="setFeedFilter('images')" id="filter-btn-images" class="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap text-slate-400 hover:text-white">
+                  صور 📸
+                </button>
+                <button onclick="setFeedFilter('videos')" id="filter-btn-videos" class="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap text-slate-400 hover:text-white">
+                  فيديوهات 🎬
+                </button>
+                <button onclick="setFeedFilter('mine')" id="filter-btn-mine" class="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap text-slate-400 hover:text-white hidden">
+                  ذكرياتي
+                </button>
+              </div>
+
+              <!-- Search -->
+              <div class="relative w-full sm:w-56">
+                <input type="text" id="feed-search-input" oninput="renderMemoriesList()" placeholder="ابحث في الذكريات..." class="w-full pl-3 pr-8 py-1.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-pink-500 placeholder:text-slate-500" />
+                <i data-lucide="search" class="absolute top-2 right-2.5 w-3.5 h-3.5 text-slate-500"></i>
+              </div>
+            </div>
+
+            <!-- Memories Stream -->
+            <div id="memories-container" class="space-y-6">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Side Column -->
+          <div class="hidden lg:block lg:col-span-4 space-y-6">
+            <!-- Stella Info Card -->
+            <div class="rounded-2xl border border-slate-800 bg-slate-900/80 p-5 shadow-xl">
+              <div class="flex items-center gap-2 mb-3">
+                <i data-lucide="coffee" class="w-4 h-4 text-pink-400"></i>
+                <h3 class="text-sm font-bold text-white">شلة استيلا (Stella)</h3>
+              </div>
+              <div class="p-3 bg-slate-950/80 rounded-xl border border-slate-800/80 space-y-2">
+                <div class="flex items-center justify-between text-xs">
+                  <span class="text-slate-400">قاعدة البيانات:</span>
+                  <span class="font-semibold text-emerald-400">سوبابيز مباشر ⚡</span>
+                </div>
+                <div class="flex items-center justify-between text-xs">
+                  <span class="text-slate-400">الذكريات المخزنة:</span>
+                  <span id="side-memories-count" class="text-slate-200 font-bold tabular-nums">0</span>
+                </div>
+                <div class="flex items-center justify-between text-xs">
+                  <span class="text-slate-400">الأعضاء المسجلين:</span>
+                  <span id="side-users-count" class="text-slate-200 font-bold tabular-nums">0</span>
+                </div>
+              </div>
+
+              <button onclick="switchTab('chat')" class="w-full mt-4 py-2 px-3 rounded-xl bg-gradient-to-r from-pink-500/10 to-purple-500/10 hover:from-pink-500/20 hover:to-purple-500/20 border border-pink-500/20 text-xs font-semibold text-pink-300 transition-colors flex items-center justify-center gap-1.5">
+                <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+                <span>افتح رغي الشلة الحي</span>
+              </button>
+            </div>
+
+            <!-- Members Highlights -->
+            <div class="rounded-2xl border border-slate-800 bg-slate-900/80 p-5 shadow-xl">
+              <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2">
+                  <i data-lucide="users" class="w-4 h-4 text-purple-400"></i>
+                  <h3 class="text-sm font-bold text-white">الأعضاء المسجلين</h3>
+                </div>
+                <button onclick="switchTab('accounts')" class="text-[11px] text-pink-400 hover:text-pink-300">
+                  عرض الكل
+                </button>
+              </div>
+
+              <div id="side-users-list" class="space-y-3">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= VIEW 2: LIVE CHAT ================= -->
+      <section id="view-chat" class="hidden">
+        <div class="w-full max-w-4xl mx-auto h-[calc(100vh-140px)] min-h-[520px] flex flex-col rounded-2xl border border-slate-800 bg-slate-900/90 shadow-2xl overflow-hidden">
+          <!-- Top bar -->
+          <div class="px-5 py-3.5 bg-slate-950/80 border-b border-slate-800 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div class="relative">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-500 to-pink-500 flex items-center justify-center text-white shadow-md">
+                  <i data-lucide="users" class="w-5 h-5"></i>
+                </div>
+                <span class="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-500 border-2 border-slate-950"></span>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h2 class="text-base font-bold text-white">رغي الشلة (Supabase Live Chat)</h2>
+                  <span class="text-[11px] font-medium text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                    مباشر
+                  </span>
+                </div>
+                <p class="text-xs text-slate-400">متصل بجدول chat_messages في سوبابيز</p>
+              </div>
+            </div>
+            <div id="chat-header-avatars" class="flex items-center -space-x-2 space-x-reverse overflow-hidden">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Messages List -->
+          <div id="chat-messages-container" class="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 bg-slate-950/40">
+            <!-- Dynamically populated -->
+          </div>
+
+          <!-- Quick Egyptian Slang Buttons -->
+          <div class="px-4 py-2 bg-slate-950/90 border-t border-slate-800/80 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+            <button onclick="insertQuickReply('يا عم خلاص 😂')" class="px-2.5 py-1 text-xs text-slate-300 hover:text-white bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-full whitespace-nowrap transition-colors">يا عم خلاص 😂</button>
+            <button onclick="insertQuickReply('قشطة جداً 🤙')" class="px-2.5 py-1 text-xs text-slate-300 hover:text-white bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-full whitespace-nowrap transition-colors">قشطة جداً 🤙</button>
+            <button onclick="insertQuickReply('فينك يا غالي؟')" class="px-2.5 py-1 text-xs text-slate-300 hover:text-white bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-full whitespace-nowrap transition-colors">فينك يا غالي؟</button>
+            <button onclick="insertQuickReply('منور يا باشا ✨')" class="px-2.5 py-1 text-xs text-slate-300 hover:text-white bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-full whitespace-nowrap transition-colors">منور يا باشا ✨</button>
+            <button onclick="insertQuickReply('وحشتوني يا رجالة ❤️')" class="px-2.5 py-1 text-xs text-slate-300 hover:text-white bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-full whitespace-nowrap transition-colors">وحشتوني يا رجالة ❤️</button>
+            <button onclick="insertQuickReply('هنتقابل امتى؟ ☕')" class="px-2.5 py-1 text-xs text-slate-300 hover:text-white bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-full whitespace-nowrap transition-colors">هنتقابل امتى؟ ☕</button>
+          </div>
+
+          <!-- Input bar -->
+          <div class="p-3.5 bg-slate-900 border-t border-slate-800">
+            <div id="chat-media-input-box" class="mb-2 hidden flex items-center gap-2">
+              <input type="url" id="chat-media-url" placeholder="حط رابط صورة تشاركها في الشات..." class="flex-1 px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-pink-500 placeholder:text-slate-600" />
+              <button onclick="toggleChatMediaBox()" class="text-xs text-slate-400 hover:text-white px-2 py-1">إلغاء</button>
+            </div>
+
+            <form onsubmit="handleSendChat(event)" class="flex items-center gap-2">
+              <button type="button" onclick="toggleChatMediaBox()" class="p-2 rounded-xl bg-slate-950 text-slate-400 border border-slate-800 hover:text-white transition-colors" title="إرفاق صورة">
+                <i data-lucide="image" class="w-4 h-4"></i>
+              </button>
+
+              <input type="text" id="chat-input-text" placeholder="ارغي مع الشلة يا نجم... اكتب اللي في بالك" class="flex-1 px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-pink-500 placeholder:text-slate-600" />
+
+              <button type="submit" id="chat-submit-btn" class="p-2.5 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-white shadow-lg shadow-pink-900/30 transition-all active:scale-95" title="إرسال">
+                <i data-lucide="send" class="w-4 h-4"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= VIEW 3: ACCOUNTS ================= -->
+      <section id="view-accounts" class="hidden max-w-5xl mx-auto space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+          <div>
+            <h1 class="text-xl font-bold text-white flex items-center gap-2">
+              <span>أعضاء شلة استيلا في سوبابيز</span>
+              <span id="accounts-count-badge" class="text-xs text-pink-400 bg-pink-500/10 px-2 py-0.5 rounded-full border border-pink-500/20 font-normal">0 عضو</span>
+            </h1>
+            <p class="text-xs text-slate-400 mt-1">
+              جميع الحسابات الحقيقية المسجلة في قاعدة بيانات سوبابيز
+            </p>
+          </div>
+
+          <div class="relative w-full sm:w-64">
+            <input type="text" id="accounts-search-input" oninput="renderAccountsList()" placeholder="دور على عضو في الشلة..." class="w-full pl-3 pr-9 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-pink-500 placeholder:text-slate-500" />
+            <i data-lucide="search" class="absolute top-2.5 right-3 w-4 h-4 text-slate-500"></i>
+          </div>
+        </div>
+
+        <div id="accounts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Dynamically populated -->
+        </div>
+      </section>
+
+      <!-- ================= VIEW 4: USER PROFILE ================= -->
+      <section id="view-profile" class="hidden max-w-4xl mx-auto space-y-6">
+        <button onclick="switchTab('accounts')" class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-colors">
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          <span>الرجوع لكل الأعضاء</span>
+        </button>
+
+        <div class="relative rounded-2xl border border-slate-800 bg-slate-900/90 overflow-hidden shadow-2xl p-6 sm:p-8">
+          <div class="absolute top-0 inset-x-0 h-32 bg-gradient-to-r from-pink-600/30 via-purple-600/20 to-indigo-600/20 pointer-events-none"></div>
+
+          <div class="relative flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-right">
+            <div class="relative">
+              <img id="profile-view-avatar" src="" alt="" class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl border-4 border-slate-900 shadow-2xl object-cover bg-slate-800" />
+              <div class="absolute -bottom-2 -right-2 p-1.5 rounded-lg bg-pink-500 text-white shadow-lg">
+                <i data-lucide="sparkles" class="w-4 h-4"></i>
+              </div>
+            </div>
+
+            <div class="flex-1 space-y-2.5">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <h1 id="profile-view-username" class="text-2xl font-bold text-white tracking-tight">اسم العضو</h1>
+                  <div class="flex items-center justify-center sm:justify-start gap-1.5 text-xs text-slate-400 mt-1">
+                    <i data-lucide="calendar" class="w-3.5 h-3.5 text-pink-400"></i>
+                    <span id="profile-view-date">عضو في الشلة</span>
+                  </div>
+                </div>
+
+                <div id="profile-friend-action-container">
+                  <!-- Friend request button -->
+                </div>
+              </div>
+
+              <!-- Stats -->
+              <div class="pt-3 flex items-center justify-center sm:justify-start gap-6 text-xs border-t border-slate-800/80">
+                <div class="flex items-center gap-2">
+                  <span class="text-slate-400">الذكريات المنشورة:</span>
+                  <span id="profile-memories-count" class="text-base font-bold text-white tabular-nums">0</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-slate-400">مجموع اللايكات:</span>
+                  <span id="profile-likes-count" class="text-base font-bold text-pink-400 tabular-nums">0</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- User's specific memories -->
+        <div class="space-y-4">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+            <h2 id="profile-memories-heading" class="text-base font-bold text-white">ذكريات العضو</h2>
+            <span class="text-xs text-slate-400">مرتبة من الأحدث للأقدم</span>
+          </div>
+
+          <div id="profile-memories-container" class="space-y-6">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ================= MODALS ================= -->
+
+    <!-- 1. Custom Alert / Confirm Modal (Zero alert / confirm) -->
+    <div id="custom-modal-backdrop" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+      <div class="relative w-full max-w-md overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 shadow-2xl text-slate-100 p-6 pt-7 flex flex-col items-center text-center">
+        <button onclick="closeCustomModal()" class="absolute top-4 left-4 p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+
+        <div id="custom-modal-icon" class="w-14 h-14 rounded-2xl bg-slate-800/90 border border-slate-700/80 flex items-center justify-center mb-4 shadow-inner text-pink-400">
+          <i data-lucide="info" class="w-7 h-7"></i>
+        </div>
+
+        <h3 id="custom-modal-title" class="text-xl font-bold text-white mb-2 tracking-tight">عنوان التنبيه</h3>
+        <p id="custom-modal-message" class="text-slate-300 text-sm leading-relaxed mb-6 max-w-sm">نص الرسالة</p>
+
+        <div id="custom-modal-actions" class="flex items-center gap-3 w-full justify-center">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Create Memory Modal -->
+    <div id="create-modal-backdrop" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+      <div class="relative w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-2xl border border-slate-800 bg-slate-900 shadow-2xl p-6 text-slate-100">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-lg bg-pink-500/10 border border-pink-500/30 flex items-center justify-center text-pink-400">
+              <i data-lucide="sparkles" class="w-4 h-4"></i>
+            </div>
+            <h2 class="text-lg font-bold text-white">انشر ذكرى حية في سوبابيز ✨</h2>
+          </div>
+          <button onclick="closeCreateModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <form onsubmit="handleCreateMemorySubmit(event)" class="mt-5 space-y-4">
+          <!-- Media Upload Section -->
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-xs font-semibold text-slate-300">الصورة أو الفيديو</label>
+              <div class="flex items-center gap-1 p-0.5 bg-slate-950 rounded-lg border border-slate-800 text-xs">
+                <button type="button" id="tab-upload-file" onclick="setUploadType('file')" class="px-2.5 py-1 rounded-md bg-slate-800 text-pink-400 font-medium">رفع ملف</button>
+                <button type="button" id="tab-upload-url" onclick="setUploadType('url')" class="px-2.5 py-1 rounded-md text-slate-400 hover:text-white">رابط مباشر</button>
+              </div>
+            </div>
+
+            <!-- File Upload -->
+            <div id="box-upload-file">
+              <input type="file" id="file-input" accept="image/*,video/*" onchange="onFileSelected(event)" class="hidden" />
+              <div id="file-dropzone" onclick="document.getElementById('file-input').click()" class="border-2 border-dashed border-slate-800 hover:border-pink-500/50 bg-slate-950/60 rounded-xl p-8 flex flex-col items-center justify-center cursor-pointer transition-all hover:bg-slate-950">
+                <div class="w-12 h-12 rounded-full bg-slate-900 flex items-center justify-center mb-3 text-slate-400">
+                  <i data-lucide="upload" class="w-6 h-6"></i>
+                </div>
+                <p class="text-sm font-medium text-slate-300 mb-1">اضغط هنا لرفع صورة أو فيديو من جهازك</p>
+                <p class="text-xs text-slate-500">يدعم الصور ومقاطع الفيديو وسيتصل مباشرة بسوبابيز</p>
+              </div>
+
+              <!-- Preview container -->
+              <div id="file-preview-box" class="relative group rounded-xl overflow-hidden border border-slate-800 bg-slate-950 max-h-56 hidden flex items-center justify-center">
+                <img id="file-preview-img" src="" alt="معاينة" class="max-h-56 w-full object-cover hidden" />
+                <video id="file-preview-video" src="" controls class="max-h-56 w-full object-cover hidden"></video>
+                <button type="button" onclick="document.getElementById('file-input').click()" class="absolute bottom-3 left-3 px-3 py-1.5 rounded-lg bg-black/70 hover:bg-black text-xs text-white backdrop-blur-sm transition-colors border border-white/10">تغيير الملف</button>
+              </div>
+            </div>
+
+            <!-- URL Input -->
+            <div id="box-upload-url" class="space-y-2 hidden">
+              <div class="relative">
+                <input type="url" id="create-media-url" placeholder="https://example.com/photo.jpg" class="w-full pl-3 pr-10 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-200 focus:outline-none focus:border-pink-500 placeholder:text-slate-600" />
+                <i data-lucide="link" class="absolute top-3 right-3 w-4 h-4 text-slate-500"></i>
+              </div>
+              <div class="flex items-center gap-3 text-xs text-slate-400">
+                <span class="font-medium text-slate-300">النوع:</span>
+                <label class="flex items-center gap-1.5 cursor-pointer">
+                  <input type="radio" name="url_media_type" value="image" checked class="accent-pink-500" /> صورة
+                </label>
+                <label class="flex items-center gap-1.5 cursor-pointer">
+                  <input type="radio" name="url_media_type" value="video" class="accent-pink-500" /> فيديو
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Caption -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5">الكابشن / حكاية الذكرى *</label>
+            <textarea id="create-caption" rows="3" placeholder="احكي لنا إيه اللي حصل أو كلمة حلوة للأصحاب..." class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-200 focus:outline-none focus:border-pink-500 placeholder:text-slate-600 resize-none"></textarea>
+          </div>
+
+          <!-- Privacy -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5">الخصوصية</label>
+            <div class="flex items-center gap-2">
+              <button type="button" id="privacy-btn-public" onclick="setMemoryPrivacy('public')" class="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-medium border border-pink-500/50 bg-pink-500/10 text-pink-300">
+                <i data-lucide="globe" class="w-3.5 h-3.5"></i>
+                <span>للشلة كلها (عام)</span>
+              </button>
+              <button type="button" id="privacy-btn-friends" onclick="setMemoryPrivacy('friends')" class="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-medium border border-slate-800 bg-slate-950 text-slate-400 hover:text-white">
+                <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+                <span>للأنتيم بس (خاص)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Submit Buttons -->
+          <div class="pt-3 flex items-center justify-end gap-3 border-t border-slate-800/80">
+            <button type="button" onclick="closeCreateModal()" class="px-4 py-2 text-xs font-medium text-slate-400 hover:text-white transition-colors">إلغاء</button>
+            <button type="submit" id="create-submit-btn" class="px-6 py-2.5 text-xs font-semibold bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-white rounded-xl shadow-lg shadow-pink-900/30 transition-all active:scale-95">
+              نشر في سوبابيز 🚀
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 3. Auth Modal (Login & Register) -->
+    <div id="auth-modal-backdrop" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+      <div class="relative w-full max-w-md overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 shadow-2xl p-6 text-slate-100">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-lg bg-pink-500/10 border border-pink-500/30 flex items-center justify-center text-pink-400">
+              <i data-lucide="sparkles" class="w-4 h-4"></i>
+            </div>
+            <h2 id="auth-modal-title" class="text-lg font-bold text-white">تسجيل الدخول في سوبابيز</h2>
+          </div>
+          <button onclick="closeAuthModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <!-- Mode Switch Tabs -->
+        <div class="mt-4 p-1 bg-slate-950 rounded-xl border border-slate-800 flex items-center">
+          <button type="button" id="auth-tab-login" onclick="setAuthMode('login')" class="flex-1 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-pink-400 shadow-sm transition-colors">تسجيل دخول</button>
+          <button type="button" id="auth-tab-register" onclick="setAuthMode('register')" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition-colors">حساب جديد</button>
+        </div>
+
+        <form onsubmit="handleAuthSubmit(event)" class="mt-5 space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5">اسم المستخدم</label>
+            <div class="relative">
+              <input type="text" id="auth-username" required placeholder="اكتب اسمك في الشلة..." class="w-full pl-3 pr-9 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-pink-500 placeholder:text-slate-600" />
+              <i data-lucide="user" class="absolute top-3 right-3 w-4 h-4 text-slate-500"></i>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5">كلمة المرور</label>
+            <div class="relative">
+              <input type="password" id="auth-password" required placeholder="كلمة السر الخاصة بالحساب" class="w-full pl-3 pr-9 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-pink-500 placeholder:text-slate-600" />
+              <i data-lucide="lock" class="absolute top-3 right-3 w-4 h-4 text-slate-500"></i>
+            </div>
+          </div>
+
+          <!-- Register Avatars Section -->
+          <div id="auth-register-avatar-section" class="hidden">
+            <label class="block text-xs font-semibold text-slate-300 mb-2">اختار صورة البروفايل أو حط رابط مباشر</label>
+            <div id="preset-avatars-row" class="flex items-center gap-2 mb-2 overflow-x-auto pb-1">
+              <!-- Dynamically populated -->
+            </div>
+            <div class="relative">
+              <input type="url" id="auth-avatar-url" placeholder="أو رابط صورة مباشر (URL)..." class="w-full pl-3 pr-9 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-pink-500 placeholder:text-slate-600" />
+              <i data-lucide="image" class="absolute top-2.5 right-3 w-3.5 h-3.5 text-slate-500"></i>
+            </div>
+          </div>
+
+          <div class="pt-2">
+            <button type="submit" id="auth-submit-btn" class="w-full py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-white shadow-lg shadow-pink-900/30 transition-all active:scale-95">
+              تسجيل الدخول
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 4. Media Lightbox Modal -->
+    <div id="lightbox-backdrop" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/95 backdrop-blur-lg">
+      <div class="relative max-w-5xl max-h-[90vh] w-full flex flex-col items-center">
+        <div class="w-full flex items-center justify-between pb-3 text-white">
+          <span id="lightbox-title" class="text-sm font-medium text-slate-300 truncate max-w-md">عرض الذكرى</span>
+          <button onclick="closeLightbox()" class="p-2 rounded-full bg-slate-800/80 hover:bg-slate-700 text-white transition-colors">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+        <div class="relative w-full overflow-hidden rounded-2xl border border-slate-800 bg-black flex items-center justify-center shadow-2xl">
+          <img id="lightbox-img" src="" alt="ذكرى" class="max-h-[80vh] w-auto object-contain rounded-2xl hidden" />
+          <video id="lightbox-video" src="" controls autoplay class="max-h-[80vh] w-auto object-contain rounded-2xl hidden"></video>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= STANDALONE LOGIC SCRIPT ================= -->
+    <script>
+      // 1. Supabase Client Configuration
+      const SUPABASE_URL = "https://jjeurdozzavmlbanzwwa.supabase.co";
+      const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpqZXVyZG96emF2bWxiYW56d3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4MjEyMTEsImV4cCI6MjEwNjM5NzIxMX0._JCmaTl5WEYx_TZjoJJhPDmkDCB9gHC8_mp3XGGlqY4";
+
+      const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+      // 2. Application State
+      let currentUser = null;
+      let allUsers = [];
+      let memories = [];
+      let chatMessages = [];
+      let friendships = [];
+      let currentTab = 'feed';
+      let currentFeedFilter = 'all';
+      let selectedUserProfile = null;
+
+      // Memory Creator State
+      let currentUploadType = 'file';
+      let selectedFileBase64 = '';
+      let selectedFileType = 'image';
+      let currentMemoryPrivacy = 'public';
+
+      // Auth Mode State
+      let currentAuthMode = 'login';
+      const PRESET_AVATARS = [
+        'https://api.dicebear.com/7.x/bottts/svg?seed=Pody&backgroundColor=b6e3f4',
+        'https://api.dicebear.com/7.x/bottts/svg?seed=Kimo&backgroundColor=c0aede',
+        'https://api.dicebear.com/7.x/bottts/svg?seed=Nour&backgroundColor=ffd5dc',
+        'https://api.dicebear.com/7.x/bottts/svg?seed=Zizo&backgroundColor=d1d4f9',
+        'https://api.dicebear.com/7.x/bottts/svg?seed=Sara&backgroundColor=ffdfba',
+        'https://api.dicebear.com/7.x/bottts/svg?seed=Alex&backgroundColor=c0eb75'
+      ];
+      let selectedAvatarUrl = PRESET_AVATARS[0];
+
+      // 3. Custom Modal Manager (Strictly replaces alert() and confirm())
+      function showCustomModal({ type = 'info', title, message, confirmText = 'تمام', cancelText = 'إلغاء', onConfirm = null }) {
+        const backdrop = document.getElementById('custom-modal-backdrop');
+        const iconContainer = document.getElementById('custom-modal-icon');
+        const titleEl = document.getElementById('custom-modal-title');
+        const messageEl = document.getElementById('custom-modal-message');
+        const actionsEl = document.getElementById('custom-modal-actions');
+
+        titleEl.textContent = title;
+        messageEl.textContent = message;
+
+        // Set Icon
+        if (type === 'danger' || type === 'confirm') {
+          iconContainer.className = 'w-14 h-14 rounded-2xl bg-slate-800/90 border border-slate-700/80 flex items-center justify-center mb-4 shadow-inner text-rose-400';
+          iconContainer.innerHTML = '<i data-lucide="trash-2" class="w-7 h-7"></i>';
+        } else if (type === 'success') {
+          iconContainer.className = 'w-14 h-14 rounded-2xl bg-slate-800/90 border border-slate-700/80 flex items-center justify-center mb-4 shadow-inner text-emerald-400';
+          iconContainer.innerHTML = '<i data-lucide="check-circle-2" class="w-7 h-7"></i>';
+        } else {
+          iconContainer.className = 'w-14 h-14 rounded-2xl bg-slate-800/90 border border-slate-700/80 flex items-center justify-center mb-4 shadow-inner text-pink-400';
+          iconContainer.innerHTML = '<i data-lucide="info" class="w-7 h-7"></i>';
+        }
+
+        // Action Buttons
+        if (type === 'confirm' || type === 'danger') {
+          actionsEl.innerHTML = `
+            <button onclick="handleModalConfirm()" class="flex-1 py-2.5 px-4 rounded-xl text-sm font-semibold bg-rose-600 hover:bg-rose-500 text-white shadow-lg transition-all">${confirmText}</button>
+            <button onclick="closeCustomModal()" class="flex-1 py-2.5 px-4 rounded-xl text-sm font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-all">${cancelText}</button>
+          `;
+        } else {
+          actionsEl.innerHTML = `
+            <button onclick="closeCustomModal()" class="w-full py-2.5 px-6 rounded-xl text-sm font-semibold bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-white shadow-lg transition-all">${confirmText}</button>
+          `;
+        }
+
+        window._activeModalConfirm = onConfirm;
+        backdrop.classList.remove('hidden');
+        if (window.lucide) window.lucide.createIcons();
+      }
+
+      function handleModalConfirm() {
+        if (typeof window._activeModalConfirm === 'function') {
+          window._activeModalConfirm();
+        }
+        closeCustomModal();
+      }
+
+      function closeCustomModal() {
+        document.getElementById('custom-modal-backdrop').classList.add('hidden');
+        window._activeModalConfirm = null;
+      }
+
+      // 4. Initial Boot & Session
+      function initAuthSession() {
+        try {
+          const raw = localStorage.getItem('stella_live_user_session');
+          if (raw) currentUser = JSON.parse(raw);
+        } catch(e) {}
+        updateNavbarAuth();
+      }
+
+      function updateNavbarAuth() {
+        const container = document.getElementById('auth-actions-container');
+        const profileNavBtn = document.getElementById('nav-btn-profile');
+        const welcomeTitle = document.getElementById('welcome-user-title');
+        const quickAvatar = document.getElementById('quick-bar-avatar');
+        const mineFilterBtn = document.getElementById('filter-btn-mine');
+
+        if (currentUser) {
+          if (profileNavBtn) profileNavBtn.classList.remove('hidden');
+          if (mineFilterBtn) mineFilterBtn.classList.remove('hidden');
+          if (welcomeTitle) welcomeTitle.textContent = `يا مرحب بيك يا ${currentUser.username}! 🌟`;
+          if (quickAvatar) quickAvatar.src = currentUser.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(currentUser.username)}`;
+
+          container.innerHTML = `
+            <div class="flex items-center gap-2 pl-1 border-r border-slate-800 pr-2">
+              <button onclick="viewUserProfile('${currentUser.username}')" class="flex items-center gap-2 p-1 rounded-xl hover:bg-slate-900 transition-colors" title="بروفايلي">
+                <img src="${currentUser.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(currentUser.username)}`}" class="w-8 h-8 rounded-full border border-pink-500/40 object-cover bg-slate-800" />
+                <span class="hidden md:inline text-xs font-medium text-slate-300 max-w-[100px] truncate">${currentUser.username}</span>
+              </button>
+              <button onclick="handleLogout()" class="p-2 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors" title="تسجيل خروج">
+                <i data-lucide="log-out" class="w-4 h-4"></i>
+              </button>
+            </div>
+          `;
+        } else {
+          if (profileNavBtn) profileNavBtn.classList.add('hidden');
+          if (mineFilterBtn) mineFilterBtn.classList.add('hidden');
+          if (welcomeTitle) welcomeTitle.textContent = 'يا أهلاً بيك في ذكريات استيلا! 🌟';
+          if (quickAvatar) quickAvatar.src = 'https://api.dicebear.com/7.x/bottts/svg?seed=Guest';
+
+          container.innerHTML = `
+            <button onclick="openAuthModal()" class="px-3.5 py-1.5 text-xs sm:text-sm font-medium text-slate-200 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-xl transition-colors whitespace-nowrap">
+              تسجيل دخول
+            </button>
+          `;
+        }
+        if (window.lucide) window.lucide.createIcons();
+      }
+
+      function handleLogout() {
+        showCustomModal({
+          type: 'confirm',
+          title: 'تسجيل خروج من الشلة',
+          message: 'متأكد إنك عايز تخرج من حسابك دلوقتي؟ هتوحشنا يا غالي!',
+          confirmText: 'أيوه، اخرج',
+          cancelText: 'إلغاء',
+          onConfirm: () => {
+            localStorage.removeItem('stella_live_user_session');
+            currentUser = null;
+            updateNavbarAuth();
+            if (currentTab === 'profile') switchTab('feed');
+            showCustomModal({
+              type: 'info',
+              title: 'مع السلامة',
+              message: 'تم تسجيل الخروج بنجاح. مستنيينك ترجع تنورنا!'
+            });
+          }
+        });
+      }
+
+      // 5. Data Fetching from Supabase
+      async function loadAllSupabaseData() {
+        try {
+          const [usersRes, memoriesRes, friendshipsRes] = await Promise.all([
+            sb.from('users').select('*').order('created_at', { ascending: false }),
+            sb.from('memories').select('*').order('created_at', { ascending: false }),
+            sb.from('friendships').select('*')
+          ]);
+
+          allUsers = usersRes.data || [];
+          memories = memoriesRes.data || [];
+          friendships = friendshipsRes.data || [];
+
+          renderMemoriesList();
+          renderSideStats();
+          renderAccountsList();
+        } catch (err) {
+          console.error('Supabase fetch error:', err);
+        }
+      }
+
+      function renderSideStats() {
+        const sideMemCount = document.getElementById('side-memories-count');
+        const sideUserCount = document.getElementById('side-users-count');
+        const feedCountBadge = document.getElementById('feed-count-badge');
+        const accountsBadge = document.getElementById('accounts-count-badge');
+        const sideUsersList = document.getElementById('side-users-list');
+
+        if (sideMemCount) sideMemCount.textContent = memories.length;
+        if (sideUserCount) sideUserCount.textContent = allUsers.length;
+        if (feedCountBadge) feedCountBadge.textContent = memories.length;
+        if (accountsBadge) accountsBadge.textContent = `${allUsers.length} عضو`;
+
+        if (sideUsersList) {
+          if (allUsers.length === 0) {
+            sideUsersList.innerHTML = '<p class="text-xs text-slate-500 py-3 text-center">لسه مافيش حسابات مسجلة في سوبابيز.</p>';
+          } else {
+            sideUsersList.innerHTML = allUsers.slice(0, 5).map(u => {
+              const uCount = memories.filter(m => m.username === u.username).length;
+              const av = u.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(u.username)}`;
+              return `
+                <div onclick="viewUserProfile('${u.username}')" class="flex items-center justify-between p-2 rounded-xl hover:bg-slate-800/80 cursor-pointer transition-colors">
+                  <div class="flex items-center gap-2.5">
+                    <img src="${av}" alt="${u.username}" class="w-8 h-8 rounded-full border border-slate-700 object-cover bg-slate-800" />
+                    <div>
+                      <div class="text-xs font-semibold text-slate-200">${u.username}</div>
+                    </div>
+                  </div>
+                  <span class="text-[11px] text-slate-500">${uCount} ذكرى</span>
+                </div>
+              `;
+            }).join('');
+          }
+        }
+      }
+
+      // 6. Memories Feed Rendering
+      function renderMemoriesList() {
+        const container = document.getElementById('memories-container');
+        const searchVal = (document.getElementById('feed-search-input')?.value || '').toLowerCase().trim();
+
+        const filtered = memories.filter(m => {
+          if (currentFeedFilter === 'friends' && m.privacy !== 'friends') return false;
+          if (currentFeedFilter === 'images' && m.type !== 'image') return false;
+          if (currentFeedFilter === 'videos' && m.type !== 'video') return false;
+          if (currentFeedFilter === 'mine' && (!currentUser || m.username !== currentUser.username)) return false;
+
+          if (searchVal) {
+            const capMatch = (m.caption || '').toLowerCase().includes(searchVal);
+            const userMatch = (m.username || '').toLowerCase().includes(searchVal);
+            return capMatch || userMatch;
+          }
+          return true;
+        });
+
+        if (filtered.length === 0) {
+          container.innerHTML = `
+            <div class="p-12 text-center rounded-2xl border border-slate-800 bg-slate-900/40 text-slate-400">
+              <i data-lucide="sparkles" class="w-10 h-10 text-slate-600 mx-auto mb-2"></i>
+              <p class="text-sm font-semibold text-slate-200">${searchVal ? 'مافيش ذكريات مطابقة للبحث!' : 'قاعدة البيانات نظيفة وجاهزة! لسه مافيش ذكريات منشورة.'}</p>
+              <p class="text-xs text-slate-500 mt-1 mb-4">انشر أول صورة أو فيديو وخليها تنحفظ فوراً في سوبابيز!</p>
+              <button onclick="openCreateModal()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-white text-xs font-semibold shadow-md transition-all">
+                انشر أول ذكرى للشلة دلوقتي
+              </button>
+            </div>
+          `;
+        } else {
+          container.innerHTML = filtered.map(m => {
+            const author = allUsers.find(u => u.username === m.username);
+            const av = author?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(m.username)}`;
+            const isOwner = currentUser && currentUser.username === m.username;
+            const timeAgo = formatTimeAgo(m.created_at);
+
+            return `
+              <article class="rounded-2xl border border-slate-800/80 bg-slate-900/90 shadow-xl overflow-hidden text-slate-100 transition-all hover:border-slate-700/80">
+                <div class="p-4 sm:p-5 flex items-center justify-between gap-3">
+                  <div class="flex items-center gap-3">
+                    <button onclick="viewUserProfile('${m.username}')" class="shrink-0">
+                      <img src="${av}" alt="${m.username}" class="w-10 h-10 rounded-full border border-pink-500/30 object-cover bg-slate-800" />
+                    </button>
+                    <div>
+                      <div class="flex items-center gap-2">
+                        <button onclick="viewUserProfile('${m.username}')" class="text-sm font-bold text-slate-100 hover:text-pink-400 transition-colors">
+                          ${m.username}
+                        </button>
+                        ${m.privacy === 'friends' ?
+                          '<span class="flex items-center gap-1 text-[11px] text-purple-400 font-medium"><i data-lucide="lock" class="w-3 h-3"></i> للأنتيم بس</span>' :
+                          '<span class="flex items-center gap-1 text-[11px] text-slate-400"><i data-lucide="globe" class="w-3 h-3"></i> عام</span>'
+                        }
+                      </div>
+                      <div class="text-xs text-slate-400 mt-0.5">${timeAgo}</div>
+                    </div>
+                  </div>
+
+                  <div class="flex items-center gap-1">
+                    <button onclick="shareMemoryLink()" class="p-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded-lg transition-colors" title="مشاركة">
+                      <i data-lucide="share-2" class="w-4 h-4"></i>
+                    </button>
+                    ${isOwner ? `
+                      <button onclick="requestDeleteMemory('${m.id}')" class="p-2 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors" title="مسح الذكرى">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                      </button>
+                    ` : ''}
+                  </div>
+                </div>
+
+                ${m.caption ? `
+                  <div class="px-4 sm:px-5 pb-3">
+                    <p class="text-sm text-slate-200 leading-relaxed whitespace-pre-line">${escapeHtml(m.caption)}</p>
+                  </div>
+                ` : ''}
+
+                <div class="relative group bg-black/60 overflow-hidden cursor-pointer">
+                  ${m.type === 'video' ? `
+                    <div onclick="openLightbox('${m.media_url}', 'video', '${escapeHtml(m.caption || '')}')" class="relative w-full max-h-[500px] flex items-center justify-center bg-black">
+                      <video src="${m.media_url}" class="w-full max-h-[500px] object-cover" controls></video>
+                    </div>
+                  ` : `
+                    <div onclick="openLightbox('${m.media_url}', 'image', '${escapeHtml(m.caption || '')}')" class="relative w-full max-h-[500px] flex items-center justify-center bg-slate-950">
+                      <img src="${m.media_url}" alt="ذكرى" class="w-full max-h-[500px] object-cover group-hover:scale-[1.01] transition-transform duration-300" />
+                    </div>
+                  `}
+                </div>
+
+                <div class="px-4 sm:px-5 py-3 border-t border-slate-800/80 flex items-center justify-between">
+                  <button onclick="handleLikeMemory('${m.id}', ${m.likes_count || 0})" class="flex items-center gap-1.5 text-xs font-semibold py-1.5 px-3 rounded-lg text-pink-400 bg-pink-500/10 hover:bg-pink-500/20 transition-all active:scale-90">
+                    <i data-lucide="heart" class="w-4 h-4 fill-pink-500"></i>
+                    <span class="tabular-nums font-bold">${m.likes_count || 0}</span>
+                    <span>إعجاب</span>
+                  </button>
+                  <span class="text-[11px] text-slate-500">سوبابيز لايف</span>
+                </div>
+              </article>
+            `;
+          }).join('');
+        }
+        if (window.lucide) window.lucide.createIcons();
+      }
+
+      function setFeedFilter(filter) {
+        currentFeedFilter = filter;
+        ['all', 'friends', 'images', 'videos', 'mine'].forEach(f => {
+          const btn = document.getElementById(`filter-btn-${f}`);
+          if (!btn) return;
+          if (f === filter) {
+            btn.className = 'px-3 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap bg-slate-800 text-pink-400 shadow-sm';
+          } else {
+            btn.className = 'px-3 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap text-slate-400 hover:text-white';
+          }
+        });
+        renderMemoriesList();
+      }
+
+      async function handleLikeMemory(memoryId, currentLikes) {
+        if (!currentUser) {
+          openAuthModal();
+          return;
+        }
+        const newLikes = currentLikes + 1;
+        // Optimistic update
+        const mem = memories.find(m => m.id === memoryId);
+        if (mem) mem.likes_count = newLikes;
+        renderMemoriesList();
+
+        try {
+          await sb.from('memories').update({ likes_count: newLikes }).eq('id', memoryId);
+        } catch(e) {
+          console.error('Like error:', e);
+        }
+      }
+
+      function requestDeleteMemory(memoryId) {
+        showCustomModal({
+          type: 'confirm',
+          title: 'عاوز تمسح الذكرى دي من سوبابيز؟',
+          message: 'الذكرى دي هتتمسح نهائياً من قاعدة البيانات ومش هتعرف ترجعها تاني!',
+          confirmText: 'امسح يا باشا',
+          cancelText: 'لا، خليها',
+          onConfirm: async () => {
+            try {
+              await sb.from('memories').delete().eq('id', memoryId);
+              memories = memories.filter(m => m.id !== memoryId);
+              renderMemoriesList();
+              renderSideStats();
+              showCustomModal({ type: 'info', title: 'تم المسح', message: 'اتمسحت الذكرى بنجاح من قاعدة البيانات.' });
+            } catch (err) {
+              showCustomModal({ type: 'alert', title: 'خطأ', message: err.message || 'فشل مسح الذكرى، حاول تاني.' });
+            }
+          }
+        });
+      }
+
+      function shareMemoryLink() {
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(window.location.href);
+          showCustomModal({ type: 'success', title: 'اتنسخ يا باشا! ✨', message: 'تم نسخ رابط المنصة، ابعته لكل الأصحاب!' });
+        }
+      }
+
+      // 7. Live Group Chat
+      async function loadChatMessages() {
+        try {
+          const { data, error } = await sb.from('chat_messages').select('*').order('created_at', { ascending: true }).limit(150);
+          if (!error && data) {
+            chatMessages = data;
+            renderChatMessages();
+          }
+        } catch(e) {}
+      }
+
+      function renderChatMessages() {
+        const container = document.getElementById('chat-messages-container');
+        if (!container) return;
+
+        if (chatMessages.length === 0) {
+          container.innerHTML = `
+            <div class="h-full flex flex-col items-center justify-center text-center p-6 text-slate-400">
+              <i data-lucide="sparkles" class="w-10 h-10 text-pink-400/50 mb-2"></i>
+              <p class="text-sm font-semibold text-slate-200">الشات هادي وجديد في سوبابيز!</p>
+              <p class="text-xs text-slate-500 mt-1">ابدأ الكلام وسيب أول رسالة حية للأصحاب.</p>
+            </div>
+          `;
+        } else {
+          container.innerHTML = chatMessages.map(msg => {
+            const isMe = currentUser && currentUser.username === msg.username;
+            const author = allUsers.find(u => u.username === msg.username);
+            const av = author?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(msg.username)}`;
+            const timeStr = formatChatTime(msg.created_at);
+
+            return `
+              <div class="flex items-end gap-2.5 ${isMe ? 'flex-row-reverse' : 'flex-row'}">
+                ${!isMe ? `
+                  <img src="${av}" alt="${msg.username}" class="w-8 h-8 rounded-full border border-slate-700 object-cover mb-1 shrink-0 bg-slate-800" />
+                ` : ''}
+                <div class="max-w-[75%] sm:max-w-[65%] rounded-2xl p-3.5 shadow-md ${isMe ? 'bg-gradient-to-r from-pink-600 to-purple-600 text-white rounded-br-none' : 'bg-slate-800 border border-slate-700/70 text-slate-100 rounded-bl-none'}">
+                  ${!isMe ? `<div class="text-[11px] font-bold text-pink-300 mb-1">${msg.username}</div>` : ''}
+                  ${msg.media_url ? `
+                    <div class="rounded-xl overflow-hidden mb-2 border border-black/20">
+                      <img src="${msg.media_url}" alt="مرفق" class="max-h-48 w-full object-cover" />
+                    </div>
+                  ` : ''}
+                  <p class="text-xs sm:text-sm leading-relaxed whitespace-pre-wrap break-words">${escapeHtml(msg.message)}</p>
+                  <div class="text-[10px] mt-1 text-right ${isMe ? 'text-pink-200/80' : 'text-slate-400'}">${timeStr}</div>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+
+        container.scrollTop = container.scrollHeight;
+        if (window.lucide) window.lucide.createIcons();
+      }
+
+      async function handleSendChat(e) {
+        if (e) e.preventDefault();
+        if (!currentUser) {
+          openAuthModal();
+          return;
+        }
+
+        const input = document.getElementById('chat-input-text');
+        const mediaInput = document.getElementById('chat-media-url');
+        const text = (input?.value || '').trim();
+        const media = (mediaInput?.value || '').trim() || null;
+
+        if (!text && !media) return;
+
+        input.value = '';
+        if (mediaInput) mediaInput.value = '';
+        document.getElementById('chat-media-input-box').classList.add('hidden');
+
+        try {
+          const { data, error } = await sb.from('chat_messages').insert([{
+            username: currentUser.username,
+            message: text,
+            media_url: media,
+            media_type: media ? 'image' : null
+          }]).select().single();
+
+          if (!error && data) {
+            chatMessages.push(data);
+            renderChatMessages();
+          }
+        } catch (err) {
+          showCustomModal({ type: 'alert', title: 'عفواً', message: 'فشل إرسال الرسالة لسوبابيز، حاول تاني.' });
+        }
+      }
+
+      function insertQuickReply(text) {
+        if (!currentUser) {
+          openAuthModal();
+          return;
+        }
+        const input = document.getElementById('chat-input-text');
+        if (input) {
+          input.value = input.value ? `${input.value} ${text}` : text;
+          input.focus();
+        }
+      }
+
+      function toggleChatMediaBox() {
+        const box = document.getElementById('chat-media-input-box');
+        box.classList.toggle('hidden');
+      }
+
+      // 8. Accounts & Profiles
+      function renderAccountsList() {
+        const grid = document.getElementById('accounts-grid');
+        const searchVal = (document.getElementById('accounts-search-input')?.value || '').toLowerCase().trim();
+
+        const filtered = allUsers.filter(u => u.username.toLowerCase().includes(searchVal));
+
+        if (filtered.length === 0) {
+          grid.innerHTML = `
+            <div class="col-span-full p-12 text-center rounded-2xl border border-slate-800 bg-slate-900/40 text-slate-400">
+              <i data-lucide="users" class="w-10 h-10 text-slate-600 mx-auto mb-2"></i>
+              <p class="text-sm font-semibold text-slate-200">${searchVal ? 'مش لاقيين عضو بالاسم ده!' : 'لسه مافيش أعضاء مسجلين في سوبابيز!'}</p>
+              <p class="text-xs text-slate-500 mt-1">سجل حسابك الأول وكون أول المنضمين لشلة استيلا!</p>
+            </div>
+          `;
+        } else {
+          grid.innerHTML = filtered.map(u => {
+            const count = memories.filter(m => m.username === u.username).length;
+            const isSelf = currentUser && currentUser.username === u.username;
+            const av = u.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(u.username)}`;
+
+            // Friendship status
+            let friendBtn = '';
+            if (!isSelf && currentUser) {
+              const rel = friendships.find(f =>
+                (f.sender_username === currentUser.username && f.receiver_username === u.username) ||
+                (f.sender_username === u.username && f.receiver_username === currentUser.username)
+              );
+
+              if (rel?.status === 'accepted') {
+                friendBtn = '<span class="inline-flex items-center gap-1 py-1.5 px-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 text-xs font-medium"><i data-lucide="check" class="w-3.5 h-3.5"></i> أنتيم</span>';
+              } else if (rel?.status === 'pending') {
+                friendBtn = '<span class="inline-flex items-center gap-1 py-1.5 px-2.5 rounded-xl bg-amber-500/10 text-amber-400 text-xs font-medium"><i data-lucide="clock" class="w-3.5 h-3.5"></i> طلب مبعوت</span>';
+              } else {
+                friendBtn = `<button onclick="sendFriendRequestAction('${u.username}')" class="inline-flex items-center gap-1 py-1.5 px-3 rounded-xl bg-pink-500/10 hover:bg-pink-500/20 text-pink-400 border border-pink-500/30 text-xs font-semibold transition-colors active:scale-95"><i data-lucide="user-plus" class="w-3.5 h-3.5"></i> صداقة</button>`;
+              }
+            } else if (isSelf) {
+              friendBtn = '<span class="text-[11px] text-slate-500 py-1.5 px-2">أنت (حسابك)</span>';
+            }
+
+            return `
+              <div class="rounded-2xl border border-slate-800/80 bg-slate-900/80 hover:border-slate-700 p-5 flex flex-col justify-between transition-all group">
+                <div>
+                  <div class="flex items-start gap-3.5 mb-3">
+                    <div onclick="viewUserProfile('${u.username}')" class="relative cursor-pointer shrink-0">
+                      <img src="${av}" alt="${u.username}" class="w-12 h-12 rounded-2xl border border-pink-500/30 object-cover bg-slate-800 group-hover:border-pink-500 transition-colors" />
+                      ${isSelf ? '<span class="absolute -top-1 -right-1 w-3 h-3 bg-pink-500 rounded-full border-2 border-slate-900"></span>' : ''}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <button onclick="viewUserProfile('${u.username}')" class="text-sm font-bold text-white hover:text-pink-400 transition-colors truncate text-right block">
+                        ${u.username}
+                      </button>
+                      <div class="text-[11px] text-slate-400 mt-0.5">
+                        <span class="text-slate-300 font-semibold tabular-nums">${count}</span> ذكرى منشورة
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2">
+                  <button onclick="viewUserProfile('${u.username}')" class="flex-1 py-1.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700/80 text-slate-200 text-xs font-medium transition-colors text-center">
+                    عرض البروفايل
+                  </button>
+                  ${friendBtn}
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+        if (window.lucide) window.lucide.createIcons();
+      }
+
+      function viewUserProfile(username) {
+        selectedUserProfile = username;
+        const targetUser = allUsers.find(u => u.username === username) || { username };
+        const userMems = memories.filter(m => m.username === username);
+        const totalLikes = userMems.reduce((acc, curr) => acc + (curr.likes_count || 0), 0);
+        const isSelf = currentUser && currentUser.username === username;
+
+        document.getElementById('profile-view-username').textContent = targetUser.username;
+        document.getElementById('profile-view-avatar').src = targetUser.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(username)}`;
+        document.getElementById('profile-memories-count').textContent = userMems.length;
+        document.getElementById('profile-likes-count').textContent = totalLikes;
+        document.getElementById('profile-memories-heading').textContent = `كل ذكريات ${username} (${userMems.length})`;
+
+        // Friend Action
+        const actionCont = document.getElementById('profile-friend-action-container');
+        if (!isSelf && currentUser) {
+          const rel = friendships.find(f =>
+            (f.sender_username === currentUser.username && f.receiver_username === username) ||
+            (f.sender_username === username && f.receiver_username === currentUser.username)
+          );
+
+          if (rel?.status === 'accepted') {
+            actionCont.innerHTML = '<div class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-xs font-semibold"><i data-lucide="check" class="w-4 h-4"></i> صديق في الشلة (أنتيم)</div>';
+          } else if (rel?.status === 'pending') {
+            actionCont.innerHTML = '<div class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/30 text-xs font-semibold"><i data-lucide="clock" class="w-4 h-4"></i> تم إرسال طلب صداقة</div>';
+          } else {
+            actionCont.innerHTML = `<button onclick="sendFriendRequestAction('${username}')" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-white text-xs font-semibold shadow-md active:scale-95"><i data-lucide="user-plus" class="w-4 h-4"></i> إضافة كصديق</button>`;
+          }
+        } else {
+          actionCont.innerHTML = '';
+        }
+
+        // Render User's Memories
+        const memsContainer = document.getElementById('profile-memories-container');
+        if (userMems.length === 0) {
+          memsContainer.innerHTML = `
+            <div class="p-12 text-center rounded-2xl border border-slate-800 bg-slate-900/40 text-slate-400">
+              <i data-lucide="sparkles" class="w-10 h-10 text-slate-600 mx-auto mb-2"></i>
+              <p class="text-sm font-semibold text-slate-300">${username} لسه ما نشرش أي ذكريات في سوبابيز!</p>
+              <p class="text-xs text-slate-500 mt-1">أول ما ينشر صور أو فيديوهات هتظهر هنا علطول.</p>
+            </div>
+          `;
+        } else {
+          memsContainer.innerHTML = userMems.map(m => {
+            const isOwner = currentUser && currentUser.username === m.username;
+            return `
+              <article class="rounded-2xl border border-slate-800/80 bg-slate-900/90 shadow-xl overflow-hidden text-slate-100">
+                <div class="p-4 sm:p-5 flex items-center justify-between gap-3">
+                  <div>
+                    <span class="text-sm font-bold text-slate-100">${m.username}</span>
+                    <div class="text-xs text-slate-400 mt-0.5">${formatTimeAgo(m.created_at)}</div>
+                  </div>
+                  ${isOwner ? `
+                    <button onclick="requestDeleteMemory('${m.id}')" class="p-2 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors">
+                      <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                  ` : ''}
+                </div>
+                ${m.caption ? `<div class="px-4 sm:px-5 pb-3"><p class="text-sm text-slate-200">${escapeHtml(m.caption)}</p></div>` : ''}
+                <div class="relative bg-black/60 overflow-hidden cursor-pointer" onclick="openLightbox('${m.media_url}', '${m.type}', '${escapeHtml(m.caption || '')}')">
+                  ${m.type === 'video' ? `
+                    <video src="${m.media_url}" class="w-full max-h-[500px] object-cover" controls></video>
+                  ` : `
+                    <img src="${m.media_url}" alt="ذكرى" class="w-full max-h-[500px] object-cover" />
+                  `}
+                </div>
+                <div class="px-4 sm:px-5 py-3 border-t border-slate-800/80 flex items-center justify-between">
+                  <button onclick="handleLikeMemory('${m.id}', ${m.likes_count || 0})" class="flex items-center gap-1.5 text-xs font-semibold py-1.5 px-3 rounded-lg text-pink-400 bg-pink-500/10 hover:bg-pink-500/20">
+                    <i data-lucide="heart" class="w-4 h-4 fill-pink-500"></i>
+                    <span>${m.likes_count || 0}</span>
+                  </button>
+                </div>
+              </article>
+            `;
+          }).join('');
+        }
+
+        switchTab('profile');
+      }
+
+      async function sendFriendRequestAction(targetUsername) {
+        if (!currentUser) {
+          openAuthModal();
+          return;
+        }
+
+        try {
+          const { data, error } = await sb.from('friendships').insert([{
+            sender_username: currentUser.username,
+            receiver_username: targetUsername,
+            status: 'pending'
+          }]).select().single();
+
+          if (!error && data) {
+            friendships.push(data);
+            renderAccountsList();
+            if (selectedUserProfile) viewUserProfile(selectedUserProfile);
+            showCustomModal({ type: 'success', title: 'وصل الطلب! ✨', message: `تم إرسال طلب الصداقة لـ ${targetUsername} في سوبابيز بنجاح!` });
+          }
+        } catch(err) {
+          showCustomModal({ type: 'alert', title: 'تنبيه', message: err.message || 'فشل إرسال طلب الصداقة، حاول تاني.' });
+        }
+      }
+
+      // 9. Memory Creation Modal
+      function openCreateModal() {
+        if (!currentUser) {
+          openAuthModal();
+          return;
+        }
+        document.getElementById('create-modal-backdrop').classList.remove('hidden');
+        if (window.lucide) window.lucide.createIcons();
+      }
+
+      function closeCreateModal() {
+        document.getElementById('create-modal-backdrop').classList.add('hidden');
+        selectedFileBase64 = '';
+        document.getElementById('file-preview-box').classList.add('hidden');
+        document.getElementById('file-dropzone').classList.remove('hidden');
+        document.getElementById('create-caption').value = '';
+      }
+
+      function setUploadType(type) {
+        currentUploadType = type;
+        const btnFile = document.getElementById('tab-upload-file');
+        const btnUrl = document.getElementById('tab-upload-url');
+        const boxFile = document.getElementById('box-upload-file');
+        const boxUrl = document.getElementById('box-upload-url');
+
+        if (type === 'file') {
+          btnFile.className = 'px-2.5 py-1 rounded-md bg-slate-800 text-pink-400 font-medium';
+          btnUrl.className = 'px-2.5 py-1 rounded-md text-slate-400 hover:text-white';
+          boxFile.classList.remove('hidden');
+          boxUrl.classList.add('hidden');
+        } else {
+          btnUrl.className = 'px-2.5 py-1 rounded-md bg-slate-800 text-pink-400 font-medium';
+          btnFile.className = 'px-2.5 py-1 rounded-md text-slate-400 hover:text-white';
+          boxUrl.classList.remove('hidden');
+          boxFile.classList.add('hidden');
+        }
+      }
+
+      function setMemoryPrivacy(p) {
+        currentMemoryPrivacy = p;
+        const btnPublic = document.getElementById('privacy-btn-public');
+        const btnFriends = document.getElementById('privacy-btn-friends');
+        if (p === 'public') {
+          btnPublic.className = 'flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-medium border border-pink-500/50 bg-pink-500/10 text-pink-300';
+          btnFriends.className = 'flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-medium border border-slate-800 bg-slate-950 text-slate-400 hover:text-white';
+        } else {
+          btnFriends.className = 'flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-medium border border-purple-500/50 bg-purple-500/10 text-purple-300';
+          btnPublic.className = 'flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-medium border border-slate-800 bg-slate-950 text-slate-400 hover:text-white';
+        }
+      }
+
+      function onFileSelected(e) {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        selectedFileType = file.type.startsWith('video/') ? 'video' : 'image';
+        const reader = new FileReader();
+        reader.onload = () => {
+          selectedFileBase64 = reader.result;
+          document.getElementById('file-dropzone').classList.add('hidden');
+          const previewBox = document.getElementById('file-preview-box');
+          const previewImg = document.getElementById('file-preview-img');
+          const previewVid = document.getElementById('file-preview-video');
+
+          previewBox.classList.remove('hidden');
+          if (selectedFileType === 'video') {
+            previewVid.src = selectedFileBase64;
+            previewVid.classList.remove('hidden');
+            previewImg.classList.add('hidden');
+          } else {
+            previewImg.src = selectedFileBase64;
+            previewImg.classList.remove('hidden');
+            previewVid.classList.add('hidden');
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+
+      async function handleCreateMemorySubmit(e) {
+        e.preventDefault();
+        if (!currentUser) return;
+
+        const caption = document.getElementById('create-caption').value.trim();
+        let mediaUrl = '';
+        let mediaType = 'image';
+
+        if (currentUploadType === 'file') {
+          mediaUrl = selectedFileBase64;
+          mediaType = selectedFileType;
+        } else {
+          mediaUrl = (document.getElementById('create-media-url').value || '').trim();
+          const checkedRadio = document.querySelector('input[name="url_media_type"]:checked');
+          mediaType = checkedRadio?.value || 'image';
+        }
+
+        if (!caption) {
+          showCustomModal({ type: 'alert', title: 'فين الوصف؟', message: 'اكتب كلمة أو قصة عن الذكرى الحلوة دي للأصحاب.' });
+          return;
+        }
+
+        if (!mediaUrl) {
+          showCustomModal({ type: 'alert', title: 'فين الصورة أو الفيديو؟', message: 'اختار صورة أو فيديو من جهازك أو حط رابط مباشر.' });
+          return;
+        }
+
+        const submitBtn = document.getElementById('create-submit-btn');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'جاري الحفظ في سوبابيز...';
+
+        try {
+          const { data, error } = await sb.from('memories').insert([{
+            user_id: currentUser.id || null,
+            username: currentUser.username,
+            caption: caption,
+            media_url: mediaUrl,
+            type: mediaType,
+            privacy: currentMemoryPrivacy,
+            likes_count: 0
+          }]).select().single();
+
+          if (error) throw error;
+
+          if (data) {
+            memories.unshift(data);
+            renderMemoriesList();
+            renderSideStats();
+
+            try {
+              if (window.confetti) {
+                window.confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+              }
+            } catch(e) {}
+
+            closeCreateModal();
+            showCustomModal({ type: 'success', title: 'تم النشر في سوبابيز! 🚀', message: 'الذكرى انحفظت في قاعدة البيانات وبقت منورة الشلة.' });
+          }
+        } catch (err) {
+          showCustomModal({ type: 'alert', title: 'حصلت مشكلة!', message: err.message || 'ماعرفناش ننشر الذكرى، حاول تاني يا غالي.' });
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'نشر في سوبابيز 🚀';
+        }
+      }
+
+      // 10. Auth Modal (Login / Register)
+      function openAuthModal() {
+        document.getElementById('auth-modal-backdrop').classList.remove('hidden');
+        renderPresetAvatars();
+        if (window.lucide) window.lucide.createIcons();
+      }
+
+      function closeAuthModal() {
+        document.getElementById('auth-modal-backdrop').classList.add('hidden');
+      }
+
+      function setAuthMode(mode) {
+        currentAuthMode = mode;
+        const tabLogin = document.getElementById('auth-tab-login');
+        const tabReg = document.getElementById('auth-tab-register');
+        const avatarSection = document.getElementById('auth-register-avatar-section');
+        const modalTitle = document.getElementById('auth-modal-title');
+        const submitBtn = document.getElementById('auth-submit-btn');
+
+        if (mode === 'login') {
+          tabLogin.className = 'flex-1 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-pink-400 shadow-sm transition-colors';
+          tabReg.className = 'flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition-colors';
+          avatarSection.classList.add('hidden');
+          modalTitle.textContent = 'تسجيل الدخول في سوبابيز';
+          submitBtn.textContent = 'تسجيل الدخول';
+        } else {
+          tabReg.className = 'flex-1 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-pink-400 shadow-sm transition-colors';
+          tabLogin.className = 'flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition-colors';
+          avatarSection.classList.remove('hidden');
+          modalTitle.textContent = 'إنشاء حساب جديد في سوبابيز';
+          submitBtn.textContent = 'إنشاء الحساب في سوبابيز';
+        }
+      }
+
+      function renderPresetAvatars() {
+        const row = document.getElementById('preset-avatars-row');
+        row.innerHTML = PRESET_AVATARS.map(av => `
+          <img src="${av}" onclick="selectAvatar('${av}')" class="w-9 h-9 rounded-xl border-2 cursor-pointer transition-all ${selectedAvatarUrl === av ? 'border-pink-500 scale-105' : 'border-slate-800 hover:border-slate-700'}" />
+        `).join('');
+      }
+
+      function selectAvatar(url) {
+        selectedAvatarUrl = url;
+        renderPresetAvatars();
+      }
+
+      async function handleAuthSubmit(e) {
+        e.preventDefault();
+        const username = document.getElementById('auth-username').value.trim();
+        const password = document.getElementById('auth-password').value.trim();
+        const customAvatarUrl = (document.getElementById('auth-avatar-url')?.value || '').trim();
+
+        if (!username) return;
+
+        const submitBtn = document.getElementById('auth-submit-btn');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'جاري الاتصال بسوبابيز...';
+
+        try {
+          if (currentAuthMode === 'login') {
+            const { data, error } = await sb.from('users').select('*').eq('username', username).maybeSingle();
+            if (error || !data) throw new Error('اسم المستخدم ده مش مسجل في شلة استيلا، اتأكد من الاسم أو اعمل حساب جديد!');
+            if (password && data.password && data.password !== password) throw new Error('كلمة المرور مش صحيحة، راجعها وحاول تاني.');
+
+            currentUser = data;
+            localStorage.setItem('stella_live_user_session', JSON.stringify(currentUser));
+            updateNavbarAuth();
+            closeAuthModal();
+            showCustomModal({ type: 'success', title: 'يا ألف أهلاً وسهلاً!', message: `نورت المنصة يا ${currentUser.username}! تم تسجيل الدخول في سوبابيز بنجاح ❤️` });
+          } else {
+            // Register
+            const { data: existing } = await sb.from('users').select('id').eq('username', username).maybeSingle();
+            if (existing) throw new Error('اسم المستخدم ده مسجل قبل كده يا بطل، اختار اسم تاني!');
+
+            const finalAvatar = customAvatarUrl || selectedAvatarUrl || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(username)}`;
+            const { data, error } = await sb.from('users').insert([{
+              username: username,
+              password: password || '123456',
+              avatar_url: finalAvatar
+            }]).select().single();
+
+            if (error || !data) throw new Error(error?.message || 'فشل حفظ الحساب في سوبابيز.');
+
+            currentUser = data;
+            localStorage.setItem('stella_live_user_session', JSON.stringify(currentUser));
+            allUsers.unshift(data);
+            updateNavbarAuth();
+            renderAccountsList();
+            renderSideStats();
+            closeAuthModal();
+            showCustomModal({ type: 'success', title: 'مبروك الانضمام!', message: `أهلاً بيك يا ${currentUser.username}! تم إنشاء حسابك في سوبابيز بنجاح، ابدأ شارك ذكرياتك! 🎉` });
+          }
+        } catch (err) {
+          showCustomModal({ type: 'alert', title: 'تنبيه', message: err.message || 'حصل خطأ في العملية، حاول تاني.' });
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = currentAuthMode === 'login' ? 'تسجيل الدخول' : 'إنشاء الحساب في سوبابيز';
+        }
+      }
+
+      // 11. Lightbox Modal
+      function openLightbox(url, type, title) {
+        const backdrop = document.getElementById('lightbox-backdrop');
+        const img = document.getElementById('lightbox-img');
+        const vid = document.getElementById('lightbox-video');
+        const titleEl = document.getElementById('lightbox-title');
+
+        titleEl.textContent = title || 'عرض الذكرى';
+
+        if (type === 'video') {
+          vid.src = url;
+          vid.classList.remove('hidden');
+          img.classList.add('hidden');
+        } else {
+          img.src = url;
+          img.classList.remove('hidden');
+          vid.classList.add('hidden');
+        }
+
+        backdrop.classList.remove('hidden');
+        if (window.lucide) window.lucide.createIcons();
+      }
+
+      function closeLightbox() {
+        const backdrop = document.getElementById('lightbox-backdrop');
+        const vid = document.getElementById('lightbox-video');
+        if (vid) vid.pause();
+        backdrop.classList.add('hidden');
+      }
+
+      // 12. Tab Switcher
+      function switchTab(tab) {
+        currentTab = tab;
+        ['feed', 'chat', 'accounts', 'profile'].forEach(t => {
+          const view = document.getElementById(`view-${t}`);
+          const navBtn = document.getElementById(`nav-btn-${t}`);
+          if (!view) return;
+
+          if (t === tab) {
+            view.classList.remove('hidden');
+            if (navBtn) {
+              navBtn.className = 'flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors whitespace-nowrap text-pink-400 bg-pink-500/10 border border-pink-500/20';
+            }
+          } else {
+            view.classList.add('hidden');
+            if (navBtn) {
+              navBtn.className = 'flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors whitespace-nowrap text-slate-400 hover:text-slate-200 hover:bg-slate-900';
+            }
+          }
+        });
+
+        if (tab === 'chat') {
+          loadChatMessages();
+        } else if (tab === 'profile' && !selectedUserProfile && currentUser) {
+          viewUserProfile(currentUser.username);
+        }
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (window.lucide) window.lucide.createIcons();
+      }
+
+      // 13. Helpers
+      function formatTimeAgo(dateStr) {
+        if (!dateStr) return 'لسه حالا';
+        try {
+          const diffSec = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
+          if (diffSec < 60) return 'لسه حالا';
+          if (diffSec < 3600) return `من ${Math.floor(diffSec / 60)} دقيقة`;
+          if (diffSec < 86400) return `من ${Math.floor(diffSec / 3600)} ساعة`;
+          if (diffSec < 172800) return 'إمبارح';
+          const days = Math.floor(diffSec / 86400);
+          if (days < 30) return `من ${days} يوم`;
+          return new Date(dateStr).toLocaleDateString('ar-EG');
+        } catch(e) {
+          return 'قريباً';
+        }
+      }
+
+      function formatChatTime(dateStr) {
+        if (!dateStr) return '';
+        try {
+          return new Date(dateStr).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+        } catch(e) {
+          return '';
+        }
+      }
+
+      function escapeHtml(str) {
+        return (str || '')
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      // 14. Realtime Channels & Polling
+      function setupRealtimeSubscriptions() {
+        try {
+          sb.channel('realtime_memories_feed')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'memories' }, () => {
+              sb.from('memories').select('*').order('created_at', { ascending: false }).then(res => {
+                if (res.data) {
+                  memories = res.data;
+                  renderMemoriesList();
+                  renderSideStats();
+                }
+              });
+            })
+            .subscribe();
+
+          sb.channel('realtime_chat_messages')
+            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_messages' }, payload => {
+              if (payload.new && !chatMessages.some(m => m.id === payload.new.id)) {
+                chatMessages.push(payload.new);
+                renderChatMessages();
+              }
+            })
+            .subscribe();
+        } catch(e) {}
+
+        // Fallback polling every 3 seconds for guaranteed freshness
+        setInterval(() => {
+          if (currentTab === 'chat') {
+            loadChatMessages();
+          }
+        }, 3000);
+      }
+
+      // Initialize on Load
+      window.addEventListener('DOMContentLoaded', () => {
+        initAuthSession();
+        loadAllSupabaseData();
+        setupRealtimeSubscriptions();
+        if (window.lucide) window.lucide.createIcons();
+      });
+    </script>
+  </body>
+</html>
